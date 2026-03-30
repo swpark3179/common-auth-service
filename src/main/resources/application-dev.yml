@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:sqlite:./dev.db
+    driver-class-name: org.sqlite.JDBC
+    hikari:
+      maximum-pool-size: 1   # SQLite는 단일 연결 사용
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: false
+
+# dev 환경에서 Swagger UI 활성화
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+  api-docs:
+    enabled: true
+    path: /api-docs
+
+logging:
+  level:
+    com.idp: DEBUG
+    org.springframework.security: DEBUG

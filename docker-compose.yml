@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  auth-service:
+    image: idp-auth-service:latest
+    container_name: idp-auth-service
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      TZ: Asia/Seoul
+      SPRING_PROFILES_ACTIVE: prod
+      # Oracle DB 연결 정보 (환경변수 또는 .env 파일로 주입)
+      ORACLE_URL: ${ORACLE_URL:-jdbc:oracle:thin:@oracle-db:1521/ORCL}
+      ORACLE_USER: ${ORACLE_USER:-auth_user}
+      ORACLE_PASSWORD: ${ORACLE_PASSWORD}
+      # JWT 시크릿 (반드시 32자 이상, 운영 환경에서 변경 필수)
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ACCESS_EXPIRY: ${JWT_ACCESS_EXPIRY:-1800}
+      JWT_REFRESH_EXPIRY: ${JWT_REFRESH_EXPIRY:-604800}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - idp-network
+
+  # 로컬 Oracle 테스트용 (운영 환경에서는 제거)
+  # oracle-db:
+  #   image: gvenzl/oracle-free:23-slim
+  #   environment:
+  #     ORACLE_PASSWORD: oracle
+  #   ports:
+  #     - "1521:1521"
+  #   networks:
+  #     - idp-network
+
+networks:
+  idp-network:
+    driver: bridge

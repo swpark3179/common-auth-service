@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:sqlite::memory:
+    driver-class-name: org.sqlite.JDBC
+    hikari:
+      maximum-pool-size: 1     # SQLite in-memory: 반드시 단일 연결
+      connection-init-sql: "PRAGMA journal_mode=WAL"
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    show-sql: true
+  flyway:
+    enabled: false
+
+jwt:
+  secret: testSecretKeyForTestingPurposesOnlyMust32Chars
+  access-token-expiry: 300
+  refresh-token-expiry: 3600
+
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
